@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pantallas y Niños — Encuesta con Consejos IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F0EDE6;
+  --card: #FAFAF7;
+  --ink: #1C1A16;
+  --rust: #B8401A;
+  --sage: #3D6B52;
+  --gold: #C89A2E;
+  --mist: #DDD9D0;
+  --light: #E8E4DC;
+  --white: #FFFFFF;
+  --sky: #2E5F8A;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+.hero {
+  background: var(--ink);
+  padding: 3rem 2rem 3rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-circles {
+  position: absolute; inset: 0; pointer-events: none;
+}
+.hero-circles span {
+  position: absolute; border-radius: 50%;
+}
+.hero-circles span:nth-child(1) {
+  width: 300px; height: 300px;
+  background: var(--rust); opacity: 0.12;
+  top: -100px; right: -80px;
+}
+.hero-circles span:nth-child(2) {
+  width: 180px; height: 180px;
+  background: var(--gold); opacity: 0.10;
+  bottom: -60px; left: 5%;
+}
+.hero-circles span:nth-child(3) {
+  width: 80px; height: 80px;
+  background: var(--sky); opacity: 0.15;
+  top: 40%; left: 55%;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+.badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--gold);
+  border: 1px solid rgba(200,154,46,0.4);
+  padding: 0.28rem 0.75rem; border-radius: 2px;
+  margin-bottom: 1.4rem;
+}
+.hero h1 {
+  font-family: 'Lora', serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 700; line-height: 1.1;
+  color: #FFFFFF; margin-bottom: 0.8rem;
+}
+.hero h1 em { font-style: italic; color: var(--gold); }
+.hero p { font-size: 0.88rem; color: rgba(255,255,255,0.55); line-height: 1.65; max-width: 420px; }
+
+/* ── PROGRESS ── */
+.prog-bar-wrap {
+  background: var(--ink);
+  padding: 0 2rem 1.6rem;
+}
+.prog-inner { max-width: 640px; margin: 0 auto; }
+.prog-labels {
+  display: flex; justify-content: space-between;
+  font-size: 0.72rem; color: rgba(255,255,255,0.35);
+  margin-bottom: 0.45rem; letter-spacing: 0.04em;
+}
+.prog-track {
+  height: 2px; background: rgba(255,255,255,0.12); border-radius: 2px; overflow: hidden;
+}
+.prog-fill {
+  height: 100%; background: var(--gold); border-radius: 2px;
+  width: 0%; transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── FORM WRAPPER ── */
+.form-wrap {
+  max-width: 640px; margin: 0 auto;
+  padding: 2.5rem 1.5rem 5rem;
+}
+
+/* ── QUESTION CARD ── */
+.q-card {
+  background: var(--card);
+  border: 1px solid var(--mist);
+  border-top: 3px solid var(--rust);
+  border-radius: 4px;
+  padding: 1.8rem 1.8rem 2rem;
+  margin-bottom: 1.4rem;
+  animation: fadeUp 0.35s ease both;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.q-card:nth-child(2)  { animation-delay:.04s }
+.q-card:nth-child(3)  { animation-delay:.08s }
+.q-card:nth-child(4)  { animation-delay:.12s }
+.q-card:nth-child(5)  { animation-delay:.16s }
+.q-card:nth-child(6)  { animation-delay:.20s }
+.q-card:nth-child(7)  { animation-delay:.24s }
+.q-card:nth-child(8)  { animation-delay:.28s }
+
+.q-num {
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--rust); margin-bottom: 0.5rem;
+}
+.q-text {
+  font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 700;
+  line-height: 1.4; color: var(--ink); margin-bottom: 1.2rem;
+}
+.q-text .req { color: var(--rust); font-family: 'Outfit', sans-serif; }
+
+.multi-hint {
+  font-size: 0.72rem; color: var(--sage);
+  background: rgba(61,107,82,0.08);
+  display: inline-block; padding: 0.22rem 0.65rem;
+  border-radius: 2px; margin-bottom: 1rem;
+}
+
+/* ── OPTIONS ── */
+.options { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.opt {
+  display: flex; align-items: center; gap: 0.8rem;
+  padding: 0.78rem 1rem;
+  border: 1.5px solid var(--mist);
+  border-radius: 3px; cursor: pointer;
+  background: var(--white);
+  transition: border-color .15s, background .15s;
+  user-select: none;
+}
+.opt:hover { border-color: var(--ink); background: var(--bg); }
+.opt.active { border-color: var(--rust); background: rgba(184,64,26,0.04); }
+.opt.active .marker { border-color: var(--rust); background: var(--rust); }
+.opt.active .marker::after { opacity: 1; }
+
+.marker {
+  width: 17px; height: 17px; flex-shrink: 0;
+  border: 1.5px solid #bbb; border-radius: 50%;
+  position: relative; transition: all .15s;
+}
+.marker::after {
+  content: ''; width: 7px; height: 7px;
+  background: white; border-radius: 50%;
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%); opacity: 0; transition: opacity .15s;
+}
+.opt.checkbox .marker { border-radius: 2px; }
+.opt.checkbox.active .marker::after {
+  width: 9px; height: 6px; background: transparent;
+  border-bottom: 2px solid white; border-left: 2px solid white;
+  border-radius: 0; transform: translate(-50%,-65%) rotate(-45deg);
+}
+
+.opt-emoji { font-size: 1rem; }
+.opt-label { font-size: 0.88rem; line-height: 1.4; }
+
+/* ── TEXTAREA ── */
+.q-textarea {
+  width: 100%; min-height: 100px;
+  border: 1.5px solid var(--mist); border-radius: 3px;
+  padding: 0.85rem 1rem;
+  font-family: 'Outfit', sans-serif; font-size: 0.88rem;
+  color: var(--ink); background: var(--white);
+  resize: vertical; outline: none;
+  transition: border-color .2s;
+}
+.q-textarea:focus { border-color: var(--ink); }
+.q-textarea::placeholder { color: #bbb; }
+
+/* ── SUBMIT ── */
+.submit-wrap { text-align: center; padding-top: 1.5rem; }
+.btn-submit {
+  background: var(--ink); color: var(--white);
+  border: none; padding: 1rem 2.8rem;
+  font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600;
+  letter-spacing: 0.05em; border-radius: 3px; cursor: pointer;
+  transition: background .2s, transform .1s;
+}
+.btn-submit:hover { background: var(--rust); }
+.btn-submit:active { transform: scale(0.98); }
+.anon-note { margin-top: 0.8rem; font-size: 0.7rem; color: #aaa; }
+
+/* ── LOADING ── */
+.loading-screen {
+  display: none; text-align: center; padding: 5rem 2rem;
+  max-width: 640px; margin: 0 auto;
+}
+.loading-screen.show { display: block; }
+.spinner {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 3px solid var(--mist);
+  border-top-color: var(--rust);
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-screen h2 {
+  font-family: 'Lora', serif; font-size: 1.5rem;
+  font-weight: 700; margin-bottom: 0.6rem;
+}
+.loading-screen p { color: #888; font-size: 0.88rem; }
+
+/* ── RESULTS ── */
+.results-screen {
+  display: none; max-width: 640px; margin: 0 auto;
+  padding: 2.5rem 1.5rem 5rem;
+  animation: fadeUp 0.5s ease;
+}
+.results-screen.show { display: block; }
+
+.results-hero {
+  background: var(--ink); color: white;
+  border-radius: 4px; padding: 2rem;
+  margin-bottom: 1.5rem; position: relative; overflow: hidden;
+}
+.results-hero::before {
+  content: ''; position: absolute;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: var(--sage); opacity: 0.15;
+  top: -60px; right: -60px;
+}
+.results-badge {
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--gold);
+  border: 1px solid rgba(200,154,46,0.4);
+  display: inline-block; padding: 0.25rem 0.65rem; margin-bottom: 1rem;
+}
+.results-hero h2 {
+  font-family: 'Lora', serif; font-size: 1.6rem;
+  font-weight: 700; line-height: 1.2; margin-bottom: 0.5rem;
+}
+.results-hero p { font-size: 0.82rem; color: rgba(255,255,255,0.5); }
+
+.advice-card {
+  background: var(--card); border: 1px solid var(--mist);
+  border-left: 4px solid var(--sage);
+  border-radius: 4px; padding: 1.6rem 1.8rem;
+  margin-bottom: 1.2rem; line-height: 1.7;
+  font-size: 0.9rem;
+}
+.advice-card.loading-card {
+  display: flex; align-items: center; gap: 1rem;
+  color: #aaa;
+}
+.advice-card .mini-spin {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--mist); border-top-color: var(--sage);
+  animation: spin 0.7s linear infinite; flex-shrink: 0;
+}
+
+/* render markdown-like from AI */
+.advice-card h3 {
+  font-family: 'Lora', serif; font-size: 1rem; font-weight: 700;
+  color: var(--ink); margin-bottom: 0.7rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.advice-card p { margin-bottom: 0.6rem; color: #333; }
+.advice-card ul { padding-left: 1.2rem; margin-bottom: 0.6rem; }
+.advice-card ul li { margin-bottom: 0.35rem; color: #333; }
+.advice-card strong { color: var(--ink); }
+
+.restart-btn {
+  display: block; width: fit-content; margin: 2rem auto 0;
+  background: transparent; border: 1.5px solid var(--ink);
+  color: var(--ink); padding: 0.75rem 2rem;
+  font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 500;
+  border-radius: 3px; cursor: pointer; transition: all .2s;
+}
+.restart-btn:hover { background: var(--ink); color: white; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-circles"><span></span><span></span><span></span></div>
+  <div class="hero-inner">
+    <div class="badge">🏫 Campaña de Salud Pública Escolar</div>
+    <h1>Pantallas y niños:<br><em>¿Cómo estamos en casa?</em></h1>
+    <p>Responde las 8 preguntas y recibirás un análisis personalizado con recomendaciones para tu familia.</p>
+  </div>
+</header>
+
+<div class="prog-bar-wrap">
+  <div class="prog-inner">
+    <div class="prog-labels">
+      <span>Tu avance</span>
+      <span id="prog-text">0 / 8</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+</div>
+
+<!-- ═══ FORM ═══ -->
+<div id="form-area">
+<div class="form-wrap">
+
+  <!-- Q1 -->
+  <div class="q-card">
+    <div class="q-num">Pregunta 1 de 8</div>
+    <div class="q-text">¿Cuántas horas al día usa pantallas el niño/a? <span class="req">*</span></div>
+    <div class="options" data-type="radio" data-id="q1">
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">🌱</span><span class="opt-label">Menos de 1 hora</span></label>
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">😊</span><span class="opt-label">Entre 1 y 2 horas</span></label>
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">😐</span><span class="opt-label">Entre 2 y 4 horas</span></label>
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">😟</span><span class="opt-label">Más de 4 horas</span></label>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card">
+    <div class="q-num">Pregunta 2 de 8</div>
+    <div class="q-text">¿En qué momento del día usa más las pantallas? <span class="req">*</span></div>
+    <div class="multi-hint">☑ Puede seleccionar varias opciones</div>
+    <div class="options" data-type="checkbox" data-id="q2">
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">🌅</span><span class="opt-label">Por la mañana (antes de la escuela)</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">🍽️</span><span class="opt-label">Durante las comidas</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">🌆</span><span class="opt-label">Por la tarde (al llegar a casa)</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">🌙</span><span class="opt-label">Por la noche (antes de dormir)</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">📅</span><span class="opt-label">Principalmente fines de semana</span></label>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-card">
+    <div class="q-num">Pregunta 3 de 8</div>
+    <div class="q-text">¿Qué tipo de contenido consume principalmente? <span class="req">*</span></div>
+    <div class="multi-hint">☑ Puede seleccionar varias opciones</div>
+    <div class="options" data-type="checkbox" data-id="q3">
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">🎮</span><span class="opt-label">Videojuegos</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">▶️</span><span class="opt-label">Videos / YouTube / TikTok</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">📺</span><span class="opt-label">Series y películas</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">💬</span><span class="opt-label">Redes sociales o mensajería</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">📚</span><span class="opt-label">Contenido educativo</span></label>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card">
+    <div class="q-num">Pregunta 4 de 8</div>
+    <div class="q-text">¿Tienen reglas en casa sobre el tiempo de pantalla? <span class="req">*</span></div>
+    <div class="options" data-type="radio" data-id="q4">
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">✅</span><span class="opt-label">Sí, y se cumplen siempre</span></label>
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">⚡</span><span class="opt-label">Sí, pero a veces no se cumplen</span></label>
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">💭</span><span class="opt-label">No, pero estamos pensando en ponerlas</span></label>
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">❌</span><span class="opt-label">No tenemos reglas al respecto</span></label>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-card">
+    <div class="q-num">Pregunta 5 de 8</div>
+    <div class="q-text">¿Ha notado alguna de estas señales en el niño/a? <span class="req">*</span></div>
+    <div class="multi-hint">☑ Puede seleccionar varias opciones</div>
+    <div class="options" data-type="checkbox" data-id="q5">
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">😴</span><span class="opt-label">Problemas para dormir</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">👀</span><span class="opt-label">Ojos cansados o irritados</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">😠</span><span class="opt-label">Se enoja cuando le quitan el dispositivo</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">🏠</span><span class="opt-label">Prefiere la pantalla a jugar afuera o con otros</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">📉</span><span class="opt-label">Ha bajado su rendimiento escolar</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">🤐</span><span class="opt-label">Se ha vuelto más retraído o poco comunicativo</span></label>
+      <label class="opt checkbox"><span class="marker"></span><span class="opt-emoji">🚫</span><span class="opt-label">Ninguna de las anteriores</span></label>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-card">
+    <div class="q-num">Pregunta 6 de 8</div>
+    <div class="q-text">¿El niño/a usa pantallas solo/a o acompañado/a? <span class="req">*</span></div>
+    <div class="options" data-type="radio" data-id="q6">
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">👨‍👩‍👧</span><span class="opt-label">Siempre acompañado/a por un adulto</span></label>
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">🔀</span><span class="opt-label">A veces acompañado/a, a veces solo/a</span></label>
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">🚪</span><span class="opt-label">Generalmente solo/a en su cuarto</span></label>
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">🏠</span><span class="opt-label">En espacios comunes de la casa</span></label>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="q-card">
+    <div class="q-num">Pregunta 7 de 8</div>
+    <div class="q-text">¿Conocías la regla 20-20-20 para cuidar los ojos? <span class="req">*</span></div>
+    <div class="options" data-type="radio" data-id="q7">
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">⭐</span><span class="opt-label">Sí, ya la practicamos</span></label>
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">📖</span><span class="opt-label">Sí, pero no la aplicamos</span></label>
+      <label class="opt"><span class="marker"></span><span class="opt-emoji">🆕</span><span class="opt-label">No, acabo de conocerla hoy</span></label>
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="q-card">
+    <div class="q-num">Pregunta 8 de 8</div>
+    <div class="q-text">Después de esta información, ¿qué cambiarías en casa? <span class="req">*</span></div>
+    <textarea class="q-textarea" id="q8" placeholder="Ej: Pondré un límite de 1 hora al día, crearé zonas sin pantallas, apagaré los dispositivos 1 hora antes de dormir…"></textarea>
+  </div>
+
+  <div class="submit-wrap">
+    <button class="btn-submit" id="btn-submit" onclick="handleSubmit()">
+      ✨ Ver mi análisis personalizado
+    </button>
+    <div class="anon-note">● Respuestas anónimas — solo con fines educativos</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ LOADING ═══ -->
+<div class="loading-screen" id="loading-screen">
+  <div class="spinner"></div>
+  <h2>Analizando tus respuestas…</h2>
+  <p>La IA está preparando recomendaciones personalizadas para tu familia.</p>
+</div>
+
+<!-- ═══ RESULTS ═══ -->
+<div class="results-screen" id="results-screen">
+  <div class="results-hero">
+    <div class="results-badge">📋 Análisis personalizado</div>
+    <h2>Tu informe familiar está listo</h2>
+    <p>Basado en tus respuestas, aquí están nuestras recomendaciones específicas para ti.</p>
+  </div>
+  <div id="advice-container"></div>
+  <button class="restart-btn" onclick="restart()">↩ Realizar encuesta de nuevo</button>
+</div>
+
+<script>
+// ── INTERACTION ──────────────────────────────────────────
+document.querySelectorAll('[data-type="radio"]').forEach(group => {
+  group.querySelectorAll('.opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      group.querySelectorAll('.opt').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      updateProgress();
+    });
+  });
+});
+
+document.querySelectorAll('[data-type="checkbox"]').forEach(group => {
+  group.querySelectorAll('.opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      opt.classList.toggle('active');
+      updateProgress();
+    });
+  });
+});
+
+document.getElementById('q8').addEventListener('input', updateProgress);
+
+function countAnswered() {
+  let n = 0;
+  for (let i = 1; i <= 7; i++) {
+    if (document.querySelectorAll(`[data-id="q${i}"] .opt.active`).length > 0) n++;
+  }
+  if (document.getElementById('q8').value.trim()) n++;
+  return n;
+}
+
+function updateProgress() {
+  const n = countAnswered();
+  document.getElementById('prog-text').textContent = `${n} / 8`;
+  document.getElementById('prog-fill').style.width = `${(n / 8) * 100}%`;
+}
+
+// ── COLLECT ANSWERS ──────────────────────────────────────
+function collectAnswers() {
+  const answers = {};
+  const questions = {
+    q1: "¿Cuántas horas al día usa pantallas el niño/a?",
+    q2: "¿En qué momento del día usa más las pantallas?",
+    q3: "¿Qué tipo de contenido consume principalmente?",
+    q4: "¿Tienen reglas en casa sobre el tiempo de pantalla?",
+    q5: "¿Ha notado alguna de estas señales en el niño/a?",
+    q6: "¿El niño/a usa pantallas solo/a o acompañado/a?",
+    q7: "¿Conocías la regla 20-20-20 para cuidar los ojos?",
+  };
+
+  for (const [id, question] of Object.entries(questions)) {
+    const selected = [...document.querySelectorAll(`[data-id="${id}"] .opt.active`)]
+      .map(el => el.querySelector('.opt-label').textContent.trim());
+    answers[question] = selected.length > 0 ? selected.join(', ') : 'Sin respuesta';
+  }
+  answers["¿Qué cambiarías en casa?"] = document.getElementById('q8').value.trim() || 'Sin respuesta';
+  return answers;
+}
+
+// ── BUILD PROMPT ─────────────────────────────────────────
+function buildPrompt(answers) {
+  const lines = Object.entries(answers)
+    .map(([q, a]) => `- ${q}\n  Respuesta: ${a}`)
+    .join('\n\n');
+
+  return `Eres un experto en salud digital infantil y bienestar familiar. Un padre o madre acaba de completar una encuesta sobre el uso de pantallas de su hijo/a en casa.
+
+Aquí están sus respuestas:
+
+${lines}
+
+Por favor genera un análisis personalizado y detallado con el siguiente formato en HTML limpio (solo usa <h3>, <p>, <ul>, <li>, <strong>; NO uses markdown ni bloques de código):
+
+1. **Resumen de la situación actual** — Un párrafo cálido y honesto que refleje exactamente lo que respondieron, sin juzgar.
+
+2. **Áreas de atención** — 2 o 3 puntos específicos basados en sus respuestas que merecen atención, con explicación de por qué importan.
+
+3. **Recomendaciones concretas para el hogar** — Al menos 5 acciones prácticas, específicas y realizables hoy mismo, directamente relacionadas con lo que respondieron.
+
+4. **La regla 20-20-20 explicada** (solo si respondieron que no la conocen o no la aplican) — Explica de forma clara y motivadora en qué consiste.
+
+5. **Mensaje de cierre** — Un párrafo motivador y empático que reconozca el esfuerzo de la familia y refuerce que pequeños cambios hacen una gran diferencia.
+
+Usa un tono cálido, profesional, empático y no condescendiente. Habla directamente a los padres en segunda persona (tú/ustedes). Basa CADA recomendación en las respuestas específicas que dieron. No generes respuestas genéricas.`;
+}
+
+// ── RENDER SECTIONS ──────────────────────────────────────
+const sectionTitles = [
+  { emoji: "📊", label: "Resumen de tu situación actual" },
+  { emoji: "⚠️", label: "Áreas de atención" },
+  { emoji: "✅", label: "Recomendaciones para el hogar" },
+  { emoji: "👁️", label: "La regla 20-20-20" },
+  { emoji: "💚", label: "Mensaje para tu familia" },
+];
+
+function renderAdvice(htmlContent) {
+  const container = document.getElementById('advice-container');
+  container.innerHTML = '';
+
+  // Parse the HTML content into sections by h3 tags
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = htmlContent;
+  const h3s = tempDiv.querySelectorAll('h3');
+
+  if (h3s.length === 0) {
+    // Fallback: render as single card
+    const card = document.createElement('div');
+    card.className = 'advice-card';
+    card.innerHTML = htmlContent;
+    container.appendChild(card);
+    return;
+  }
+
+  h3s.forEach((h3, i) => {
+    const card = document.createElement('div');
+    card.className = 'advice-card';
+    card.style.borderLeftColor = ['#3D6B52','#B8401A','#2E5F8A','#C89A2E','#3D6B52'][i % 5];
+    card.style.animationDelay = `${i * 0.1}s`;
+    card.style.animation = 'fadeUp 0.4s ease both';
+
+    // Collect content until next h3
+    let content = h3.outerHTML;
+    let sibling = h3.nextElementSibling;
+    while (sibling && sibling.tagName !== 'H3') {
+      content += sibling.outerHTML;
+      sibling = sibling.nextElementSibling;
+    }
+    card.innerHTML = content;
+    container.appendChild(card);
+  });
+}
+
+// ── SUBMIT ───────────────────────────────────────────────
+async function handleSubmit() {
+  const answered = countAnswered();
+  if (answered < 6) {
+    alert('Por favor responde al menos las primeras 7 preguntas antes de continuar.');
+    return;
+  }
+
+  // Show loading
+  document.getElementById('form-area').style.display = 'none';
+  document.getElementById('loading-screen').classList.add('show');
+  document.getElementById('prog-fill').style.width = '100%';
+  document.getElementById('prog-text').textContent = '8 / 8';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const answers = collectAnswers();
+  const prompt = buildPrompt(answers);
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1500,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.map(b => b.text || '').join('') || '';
+
+    document.getElementById('loading-screen').classList.remove('show');
+    const resultsScreen = document.getElementById('results-screen');
+    resultsScreen.classList.add('show');
+
+    renderAdvice(text);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch (err) {
+    document.getElementById('loading-screen').classList.remove('show');
+    document.getElementById('form-area').style.display = 'block';
+    alert('Hubo un error al generar el análisis. Por favor intenta de nuevo.');
+    console.error(err);
+  }
+}
+
+// ── RESTART ──────────────────────────────────────────────
+function restart() {
+  document.querySelectorAll('.opt.active').forEach(o => o.classList.remove('active'));
+  document.getElementById('q8').value = '';
+  updateProgress();
+  document.getElementById('results-screen').classList.remove('show');
+  document.getElementById('form-area').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
